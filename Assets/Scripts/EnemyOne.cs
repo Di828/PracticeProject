@@ -7,29 +7,29 @@ public class EnemyOne : Enemy
     private void Awake()
     {
         mainController = GameObject.Find("MainController").GetComponent<MainController>();
+        health = base.health;
+        startSpeed = base.speed;
     }
     void Start()
     {
-        health = 5f;        
-        speed = 15f;
-        killCost = 10;
     }
     private void Update()
     {        
-       position = transform.position;
+       position = transform.position;        
     }
 
     void FixedUpdate()
     {
-        Move();
+        if (!mainController.Instance.gameover)
+            Move();
     }
     public override void TakeDamage(float Damage)
-    {
-        health -= Damage;
-        if (health < 0)
+    {        
+        health -= Damage;        
+        if (health <= 0)
         {
             Destroy(gameObject);
             mainController.Instance.ChangeGold(killCost);
         }
-    }  
+    }    
 }

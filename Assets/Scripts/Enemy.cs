@@ -6,16 +6,17 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] protected float speed = 2f;
     [SerializeField] protected float health = 10f;    
-    protected int killCost = 1;
-    protected MainController mainController;
+    protected int killCost = 10;
+    protected MainController mainController;    
+    protected float startSpeed;
+    protected float freezeTime;
     public Vector3 position;
     public float Health 
     {
         get { return health; }        
     }
     public int Number { get; set; }
-    protected int rotations = 0;
-    
+    protected int rotations = 0;    
     protected bool DetectWall()
     {
         RaycastHit hit;
@@ -47,5 +48,19 @@ public class Enemy : MonoBehaviour
     public virtual void TakeDamage(float Damage)
     {        
     }
-  
+    public void HealthBuff(int waveNumber)
+    {
+        health += (waveNumber - 1);
+    }
+    public void SlowDown(float slowdown, float slowdownTime)
+    {
+        speed *= slowdown;
+        freezeTime = slowdownTime;
+        StartCoroutine(SlowDownCoroutine());        
+    }
+    IEnumerator SlowDownCoroutine()
+    {
+        yield return new WaitForSeconds(freezeTime);
+        speed = speed * 2;        
+    }
 }

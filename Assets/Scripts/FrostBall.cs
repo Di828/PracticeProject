@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fireball : MonoBehaviour
+public class FrostBall : MonoBehaviour
 {
     public Enemy m_Target;
     protected float speed = .1f;
     public float damage;
     public float DistanceAdjustment = 1;
+    public float slowdown = 0.5f;
+    public float slowdownTime = 4f;
     Rigidbody rb;
     private void Start()
     {
@@ -24,10 +26,11 @@ public class Fireball : MonoBehaviour
         }
     }
     private void OnTriggerEnter(Collider other)
-    {        
+    {
         if (other.GetComponent<Enemy>() == m_Target)
         {
             m_Target.TakeDamage(damage);
+            m_Target.SlowDown(slowdown,slowdownTime);
             Destroy(gameObject);
         }
     }

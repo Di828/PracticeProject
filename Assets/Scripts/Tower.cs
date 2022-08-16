@@ -7,12 +7,10 @@ public class Tower : MonoBehaviour
     [SerializeField] protected float damage = 10f;
     [SerializeField] protected float attackSpeed = 2f;
     [SerializeField] protected float attackRange = 45f;
-    [SerializeField] protected float attackTime = 0f;
-    [SerializeField] GameObject fireballPrefab;
-    public int Cost { get { return cost; } }
-    private int cost = 80;
-    int enemyToAttack = 0;
-    List<Enemy> enemyList = new List<Enemy>();
+    [SerializeField] protected float attackTime = 0f;        
+    public int cost = 80;
+    protected int enemyToAttack = 0;
+    protected List<Enemy> enemyList = new List<Enemy>();
     private void Awake()
     {
         GetComponent<BoxCollider>().size = new Vector3(attackRange, GetComponent<BoxCollider>().size.y, attackRange);        
@@ -27,18 +25,8 @@ public class Tower : MonoBehaviour
         else
             attackTime -= Time.deltaTime;
     }
-    void Attack()
-    {
-        if (enemyList[enemyToAttack] == null)
-            enemyList.Remove(enemyList[enemyToAttack]);
-        if (enemyList.Count > 0)
-        {
-            var distance = (enemyList[enemyToAttack].transform.position - transform.position).magnitude;
-            fireballPrefab.GetComponent<Fireball>().m_Target = enemyList[enemyToAttack];
-            fireballPrefab.GetComponent<Fireball>().DistanceAdjustment = distance + 1;
-            fireballPrefab.GetComponent<Fireball>().damage = damage;
-            Instantiate(fireballPrefab, transform.position, transform.rotation);            
-        }
+    protected virtual void Attack()
+    {        
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -47,7 +35,7 @@ public class Tower : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponent<Enemy>() != null)
+        if (other.GetComponent<Enemy>() != null && enemyList.Contains(other.GetComponent<Enemy>()))
             enemyList.Remove(other.GetComponent<Enemy>());
     }
 }

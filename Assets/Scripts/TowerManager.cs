@@ -5,38 +5,54 @@ using TMPro;
 
 public class TowerManager : MonoBehaviour
 {
-    bool fireTowerCreating = false;
+    bool towerCreating = false;    
     [SerializeField] List<Tower> towersToBuild = new List<Tower>();
     private MainController mainController;
     [SerializeField] private TextMeshProUGUI currentGoldText;
     [SerializeField] private TextMeshProUGUI notEnoughGoldText;
     [SerializeField] private TextMeshProUGUI towerCostText;
-    int towerIndex = 0;
+    [SerializeField] private TextMeshProUGUI gameOverText;
+    int towerIndex;
     RaycastHit hit;
     Ray ray;
     private void Awake()
     {        
         mainController = GameObject.Find("MainController").GetComponent<MainController>();
-        currentGoldText.text = "Current gold : " + mainController.Instance.currentGold;
+        currentGoldText.text = "Current gold : " + mainController.Instance.currentGold + " Lives : " + mainController.Instance.lives;
     }
 
     private void Update()
     {
-        if (fireTowerCreating)
+        if (mainController.Instance.gameover)
+        {
+            gameOverText.enabled = true;
+            return;
+        }
+        if (towerCreating)
         {
             if (Input.GetMouseButtonDown(0))
                 CreateTower();
         }
-        currentGoldText.text = "Current gold : " + mainController.Instance.currentGold;
+        currentGoldText.text = "Current gold : " + mainController.Instance.currentGold + " Lives : " + mainController.Instance.lives;
+    }
+    public void FrostTowerCreating()
+    {
+        towerIndex = 1;
+        towersToBuild[towerIndex].cost = 60;
+        TowerCreating();
     }
     public void FireTowerCreating()
     {
         towerIndex = 0;
-        if (mainController.Instance.currentGold >= towersToBuild[towerIndex].Cost)
-            fireTowerCreating = true;   
-        else                    
-            StartCoroutine(NotEnoughGoldCoroutine());                    
-
+        towersToBuild[towerIndex].cost = 80;
+        TowerCreating();
+    }
+    void TowerCreating()
+    {
+        if (mainController.Instance.currentGold >= towersToBuild[towerIndex].cost)
+            towerCreating = true;
+        else
+            StartCoroutine(NotEnoughGoldCoroutine());
     }
     IEnumerator NotEnoughGoldCoroutine()
     {
@@ -49,10 +65,10 @@ public class TowerManager : MonoBehaviour
         if (IsItPlaceForTower())
         {
             Instantiate(towersToBuild[towerIndex], hit.point, Quaternion.identity);
-            fireTowerCreating = false;
-            mainController.Instance.currentGold -= towersToBuild[towerIndex].Cost;
-            Debug.Log(towersToBuild[towerIndex].Cost);
-            currentGoldText.text = "Current gold : " + mainController.Instance.currentGold;
+            towerCreating = false;
+            mainController.Instance.currentGold -= towersToBuild[towerIndex].cost;
+            Debug.Log(towersToBuild[towerIndex].cost);
+            currentGoldText.text = "Current gold : " + mainController.Instance.currentGold + " Lives : " + mainController.Instance.lives;
         }
     }
     bool IsItPlaceForTower()

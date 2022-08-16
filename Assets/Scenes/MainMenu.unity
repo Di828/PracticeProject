@@ -416,6 +416,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Instance: {fileID: 0}
   currentGold: 0
+  lives: 10
+  gameover: 0
 --- !u!4 &612477668
 Transform:
   m_ObjectHideFlags: 0
