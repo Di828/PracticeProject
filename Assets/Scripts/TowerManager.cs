@@ -26,6 +26,7 @@ public class TowerManager : MonoBehaviour
         if (mainController.Instance.gameover)
         {
             gameOverText.enabled = true;
+            currentGoldText.text = "Current gold : " + mainController.Instance.currentGold + " Lives : " + mainController.Instance.lives;
             return;
         }
         if (towerCreating)
